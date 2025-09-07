@@ -825,3 +825,139 @@ char ch = chars[i];  // instead of int ch
 * Your logic is **correct** ✅
 * Your code is **clean and efficient** ✅
 * Used `to_string(count)` + digit-wise insertion correctly ✅
+
+
+
+
+
+
+
+
+
+
+Got it 👍 You want **short notes / explanations** for all the questions you asked so far.
+Here’s a clean collection of **problem + solution approach notes** for revision.
+
+---
+
+## **1. Count frequency of characters in array**
+
+**Problem:**
+Given a char array, count occurrences of each character.
+
+**Key Points:**
+
+* Use `unordered_map<char,int>` for frequency.
+* Must include `<unordered_map>` (not `<map>`).
+* Output of `unordered_map` is unsorted; use `map` if sorted output is required.
+
+**Code Sketch:**
+
+```cpp
+unordered_map<char,int> mp;
+for(char c: arr) mp[c]++;
+for(auto it: mp) cout << it.first << " :: " << it.second << endl;
+```
+
+---
+
+## **2. Remove all occurrences of `'a'` from char array**
+
+**Problem:**
+Given `arr = {a,a,b,c,d,a,a,e,f,a,a}`, remove all `'a'` in-place (no extra space).
+
+**Key Points:**
+
+* Use **two-pointer technique**:
+
+  * `i` = read pointer
+  * `j` = write pointer
+* Copy non-`a` characters forward.
+* Null-terminate (`'\0'`) at new end.
+
+**Code Sketch:**
+
+```cpp
+int j=0;
+for(int i=0; arr[i]!='\0'; i++)
+    if(arr[i] != 'a') arr[j++] = arr[i];
+arr[j] = '\0';
+```
+
+---
+
+## **3. Your swap-based approach (remove `'a'`)**
+
+**Problem:**
+You wanted to solve it with `swap`.
+
+**Key Points:**
+
+* Keep `j` as the position for valid characters.
+* Whenever `arr[i] != 'a'`, swap with `arr[j]`, then increment `j`.
+* Works but order may change slightly.
+
+**Code Sketch:**
+
+```cpp
+int j=0;
+for(int i=0; arr[i]!='\0'; i++)
+    if(arr[i] != 'a') swap(arr[i], arr[j++]);
+arr[j] = '\0';
+```
+
+---
+
+## **4. Partition int array with condition (>25 first)**
+
+**Problem:**
+Given `arr = {120, 23, 4, 32, 19, 43, 10, 8}`, bring numbers >25 to front.
+
+**Key Points:**
+
+* Same two-pointer idea.
+* If `arr[i] > 25`, swap it forward to index `j`.
+* After loop, all `>25` values are at the start.
+
+**Code Sketch:**
+
+```cpp
+int j=0;
+for(int i=0;i<n;i++)
+    if(arr[i] > 25) swap(arr[i], arr[j++]);
+```
+
+---
+
+## **5. Remove elements ≤ 25 from int array**
+
+**Problem:**
+Instead of rearranging, completely remove numbers ≤25.
+
+**Key Points:**
+
+* Use overwrite method instead of swap.
+* Keep only elements satisfying the condition.
+* New size = `j`.
+
+**Code Sketch:**
+
+```cpp
+int j=0;
+for(int i=0;i<n;i++)
+    if(arr[i] > 25) arr[j++] = arr[i];
+```
+
+---
+
+### 🔑 General Concepts Learned
+
+* **Two-pointer technique** is the go-to approach for *removal without extra space*.
+* **Swap method** partitions the array (good for separating values).
+* **Overwrite method** compacts the array (good for deletion).
+* Strings (`char[]`) need `'\0'` termination; integer arrays don’t.
+* `unordered_map` vs `map`: unordered → fast but unsorted; map → sorted.
+
+---
+
+Would you like me to make these notes in a **tabular format (Problem | Approach | Key Code)** so it’s even easier for quick revision?

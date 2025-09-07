@@ -26,7 +26,7 @@
    - Email/Password authentication
    - JWT token management
    - Session handling
-   - Security rules
+   - Security rules 
 
 2. **Firebase Firestore**
    - NoSQL database
