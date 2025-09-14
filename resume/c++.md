@@ -3018,3 +3018,70 @@ void inorder(Node* root) {
 ---
 
 Do you want me to next explain **Balanced BST (like AVL / Red-Black Tree)** since they are used inside STL?
+
+
+
+
+
+
+Ahh, good question 👌 Now things change if the function is **virtual**.
+
+Let’s modify your class:
+
+```cpp
+class Test {
+    int a;            // non-static → per object
+    static int b;     // static → only one copy (shared)
+    virtual void show(){}  // virtual → stored in vtable
+};
+
+Test t1, t2;
+```
+
+---
+
+### 🔹 What happens with a **virtual function**?
+
+1. **Virtual Function Table (vtable)**
+
+   * The compiler creates a hidden table called **vtable** that stores pointers to virtual functions.
+   * One vtable per class.
+
+2. **vptr (virtual pointer)**
+
+   * Each object of the class gets a hidden pointer called **vptr**, which points to the class’s vtable.
+   * The vptr is stored **inside every object**.
+
+   On a 64-bit system, a pointer = **8 bytes**.
+   On a 32-bit system, a pointer = **4 bytes**.
+
+---
+
+### ✅ Memory Layout of Object `t1` / `t2`
+
+* `int a` → 4 bytes
+* `vptr` (hidden pointer) → 8 bytes (on 64-bit)
+* Due to alignment, object size will be padded to **16 bytes** (not 12).
+
+So:
+
+* Each object (`t1`, `t2`) = **16 bytes** (on 64-bit)
+* Static `b` = 4 bytes once (outside objects)
+* Virtual function implementation = stored once (code segment)
+
+---
+
+### 📌 Total
+
+* `t1` = 16 bytes
+* `t2` = 16 bytes
+* `static b` = 4 bytes once
+* Function code + vtable stored once globally
+
+---
+
+👉 So compared to a **normal function (non-virtual)** where the object was only 4 bytes, making a function **virtual** makes each object much bigger because of the **extra vptr**.
+
+---
+
+⚡ Do you want me to draw a **memory diagram** (boxes for `t1`, `t2`, vptr → vtable → function) so you can *see* how it connects?
