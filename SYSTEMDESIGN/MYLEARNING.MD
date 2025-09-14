@@ -517,9 +517,7 @@ Chair ◆-- Arms
 ---
 
 
-Here is a **detailed and structured explanation** of **UML Sequence Diagrams**, including every component with **clear meaning**, **visuals**, **sync/async message types**, and **real examples**.
 
----
 
 # 🔄 2. **Dynamic Diagrams (Behavioral)**
 
