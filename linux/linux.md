@@ -549,3 +549,6 @@ tail -F /var/log/app.log | grep --line-buffered -i "orderId=12345" | grep -i "ER
 ---
 
 Would you like a short printable **one-page cheat sheet (PDF)** I can format for you to practice with?
+
+
+###
