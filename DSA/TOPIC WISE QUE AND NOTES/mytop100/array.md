@@ -673,3 +673,79 @@ Output: `[24,12,8,6]` ✅
 ---
 
 Do you want me to also make a **comparison table** between your **division method** and this **prefix–suffix method** (pros & cons)?
+
+
+
+Got it 👍 You want **both versions together** – your **original brute-force** approach (O(n²)) and the **optimized prefix–suffix** approach (O(n)).
+
+Here’s a clean comparison in one code file:
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    // ------------------------------
+    // 1. Original Brute Force Approach (O(n^2))
+    // ------------------------------
+    int maxProductBruteForce(vector<int>& nums) {
+        int n = nums.size();
+        int maxprod = INT_MIN;
+
+        for (int i = 0; i < n; i++) {
+            int prod = 1;
+            for (int j = i; j < n; j++) {
+                prod *= nums[j];
+                maxprod = max(maxprod, prod);
+            }
+        }
+        return maxprod;
+    }
+
+    // ------------------------------
+    // 2. Optimized Prefix–Suffix Approach (O(n))
+    // ------------------------------
+    int maxProductOptimized(vector<int>& nums) {
+        int n = nums.size();
+        int maxprod = INT_MIN;
+        int prefix = 1, suffix = 1;
+
+        for (int i = 0; i < n; i++) {
+            if (prefix == 0) prefix = 1;
+            if (suffix == 0) suffix = 1;
+
+            prefix *= nums[i];          // left to right
+            suffix *= nums[n - i - 1];  // right to left
+
+            maxprod = max({maxprod, prefix, suffix});
+        }
+        return maxprod;
+    }
+};
+
+int main() {
+    Solution sol;
+    vector<int> nums = {1, 0, -5, 2, 3, -8, -9};
+
+    cout << "Brute Force Result: " << sol.maxProductBruteForce(nums) << endl;
+    cout << "Optimized Result:   " << sol.maxProductOptimized(nums) << endl;
+
+    return 0;
+}
+```
+
+---
+
+### 🔎 Output for `[1,0,-5,2,3,-8,-9]`
+
+```
+Brute Force Result: 240
+Optimized Result:   240
+```
+
+---
+
+👉 This way you can show in an interview how you started with brute force and then **optimized to O(n)**.
+
+Do you also want me to add the **Kadane-like min/max DP approach** as a **third method** in the same file for comparison?
