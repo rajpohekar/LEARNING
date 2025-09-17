@@ -426,4 +426,250 @@ public:
     }
 };
 
-👉 Do you want me to also make **notes for the optimized version** (without inner `for` loop, pure linear merge) so you have both versions side by side?
+Here are the **notes** for the solution you’ve written:
+
+---
+
+## 🔹 Problem Recap
+
+We want an array `ans` such that `ans[i]` = product of all elements of `nums` except `nums[i]`.
+
+* We must handle cases with `0`s carefully.
+* Division is allowed in your approach.
+
+---
+
+## 🔹 Step-by-Step Logic in Your Code
+
+### 1. Variables
+
+* `zeroCount` → counts how many zeros are present in the array.
+* `prod` → stores the product of all **non-zero elements**.
+* `anss` → final answer vector.
+
+---
+
+### 2. First Loop → Count zeros & compute product
+
+```cpp
+for (int i = 0; i < n; i++) {
+    if (nums[i] == 0) {
+        zeroCount++;
+    } else {
+        prod *= nums[i];
+    }
+}
+```
+
+* If number is `0`, increment `zeroCount`.
+* Otherwise multiply it into `prod`.
+* After this loop:
+
+  * `zeroCount` = how many zeros are in array.
+  * `prod` = product of all non-zero elements.
+
+---
+
+### 3. Second Loop → Build the result
+
+For each index `i`, three cases:
+
+1. **If more than one zero exists**
+   → All products will be `0` because at least two zeros kill every product.
+
+   ```cpp
+   if (zeroCount > 1) ans = 0;
+   ```
+
+2. **If exactly one zero exists**
+
+   * Only the index where `nums[i] == 0` gets the product of all non-zero elements.
+   * All other indices will be `0`.
+
+   ```cpp
+   else if (zeroCount == 1) {
+       if (nums[i] == 0) ans = prod;
+       else ans = 0;
+   }
+   ```
+
+3. **If no zeros exist**
+
+   * Each index gets the total product divided by `nums[i]`.
+
+   ```cpp
+   else ans = prod / nums[i];
+   ```
+
+---
+
+### 4. Push into answer vector
+
+```cpp
+anss.push_back(ans);
+```
+
+* This builds the result step by step.
+
+---
+
+## 🔹 Time & Space Complexity
+
+* **Time Complexity**:
+
+  * First loop = `O(n)`
+  * Second loop = `O(n)`
+  * Total = **O(n)** ✅
+* **Space Complexity**:
+
+  * Output array only = **O(n)**
+
+---
+
+## 🔹 Example Walkthrough
+
+### Example 1:
+
+`nums = [1,2,3,4]`
+
+* `zeroCount = 0`, `prod = 24`
+* ans = `[24/1, 24/2, 24/3, 24/4] = [24, 12, 8, 6]` ✅
+
+### Example 2:
+
+`nums = [0,1,2,3]`
+
+* `zeroCount = 1`, `prod = 6`
+* ans = `[6,0,0,0]` ✅
+
+### Example 3:
+
+`nums = [0,1,2,0]`
+
+* `zeroCount = 2`, `prod = 2`
+* ans = `[0,0,0,0]` ✅
+
+---
+
+📌 **Summary of your code:**
+
+* Handles all cases correctly (0, 1, or >1 zero).
+* Runs in `O(n)` time and `O(1)` extra space (ignoring output).
+* Uses division, so it’s simpler but not the most optimized way (LeetCode’s official expects no division).
+
+---
+
+Do you also want me to write the **prefix-suffix (no division)** notes in the same step-by-step style for comparison?
+w let’s write the **optimized version (no division, no extra zero handling needed)** along with clear **notes**.
+
+This is the standard **prefix–suffix approach** that runs in **O(n)** time and **O(1) extra space** (besides the output array).
+
+---
+
+## 🔹 Optimized Code (No Division)
+
+```cpp
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> ans(n, 1);
+
+        // Step 1: Prefix product (left side of i)
+        int prefix = 1;
+        for (int i = 0; i < n; i++) {
+            ans[i] = prefix;
+            prefix *= nums[i];
+        }
+
+        // Step 2: Suffix product (right side of i)
+        int suffix = 1;
+        for (int i = n - 1; i >= 0; i--) {
+            ans[i] *= suffix;
+            suffix *= nums[i];
+        }
+
+        return ans;
+    }
+};
+```
+
+---
+
+## 🔹 Notes (Step by Step)
+
+### 1. Idea
+
+For each index `i`:
+
+* Product of all elements **except nums\[i]** =
+  `product of elements before i × product of elements after i`.
+
+We calculate these two parts separately:
+
+* **Prefix product** = product of elements to the left of `i`.
+* **Suffix product** = product of elements to the right of `i`.
+
+---
+
+### 2. Prefix Pass
+
+```cpp
+int prefix = 1;
+for (int i = 0; i < n; i++) {
+    ans[i] = prefix;    // save product of elements before i
+    prefix *= nums[i];  // update prefix
+}
+```
+
+* After this loop, `ans[i]` contains product of all elements **before i**.
+
+Example (`nums = [1,2,3,4]`):
+`ans = [1, 1, 2, 6]`
+
+---
+
+### 3. Suffix Pass
+
+```cpp
+int suffix = 1;
+for (int i = n - 1; i >= 0; i--) {
+    ans[i] *= suffix;   // multiply with product of elements after i
+    suffix *= nums[i];  // update suffix
+}
+```
+
+* After this loop, each `ans[i]` becomes **prefix × suffix**.
+
+Continuing example:
+`suffix` builds as `1, 4, 12, 24` → final `ans = [24, 12, 8, 6]`. ✅
+
+---
+
+### 4. Complexity
+
+* **Time**: `O(n)` → one prefix loop + one suffix loop.
+* **Space**: `O(1)` extra (besides output vector).
+
+---
+
+## 🔹 Example Walkthrough
+
+Input: `nums = [1,2,3,4]`
+
+* Prefix pass → `[1,1,2,6]`
+* Suffix pass → `[24,12,8,6]`
+
+Output: `[24,12,8,6]` ✅
+
+---
+
+📌 **Summary**:
+
+* No division, works even with zeros automatically.
+* More optimized than your division-based approach.
+* Space-efficient (no need to store prefix & suffix arrays separately).
+
+---
+
+Do you want me to also make a **comparison table** between your **division method** and this **prefix–suffix method** (pros & cons)?
