@@ -749,3 +749,124 @@ Optimized Result:   240
 👉 This way you can show in an interview how you started with brute force and then **optimized to O(n)**.
 
 Do you also want me to add the **Kadane-like min/max DP approach** as a **third method** in the same file for comparison?
+
+
+
+
+
+
+
+
+Perfect — you’ve actually written **two different solutions** to the **Longest Substring Without Repeating Characters** problem.
+Let’s go through them step by step 🚀
+
+---
+
+## **Solution 1: Brute Force (O(n²))**
+
+```cpp
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int maxl = INT_MIN;
+        if(s.length() == 0) {
+            return 0;
+        }
+        for(int i = 0; i < s.length(); i++) {
+            int arr[256] = {0};  // to store seen characters (ASCII table)
+            
+            for(int j = i; j < s.length(); j++) {
+                if(arr[s[j]] == 1) { // duplicate found
+                    break;
+                }
+                arr[s[j]] = 1;
+                maxl = max(maxl, j - i + 1); // update window length
+            }
+        }
+        return maxl;
+    }
+};
+```
+
+### 🔑 Explanation:
+
+* Outer loop picks a starting index `i`.
+* Inner loop extends substring from `i` → `j`.
+* `arr[256]` tracks if a character is already in the substring.
+* If a duplicate is found, break (can’t extend further).
+* Update `maxl` with the length `j - i + 1`.
+
+👉 **Time complexity:** O(n²)
+👉 **Space complexity:** O(256) \~ O(1)
+
+This works, but is **slow for long strings** (like length 10⁵).
+
+---
+
+## **Solution 2: Sliding Window + HashMap (O(n))**
+
+```cpp
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int l = 0, r = 0;
+        if(s.length() == 0) {
+            return 0;
+        }
+        unordered_map<char,int> map; // stores latest index of characters
+        int maxl = INT_MIN;
+
+        for(int i = 0; i < s.length(); i++) {
+            if(map.find(s[i]) != map.end() && map[s[i]] >= l) {
+                l = map[s[i]] + 1; // move left pointer past the duplicate
+            }
+            map[s[i]] = r; // update current index of character
+
+            maxl = max(maxl, r - l + 1); // window size
+            r++;
+        }
+        return maxl;
+    }
+};
+```
+
+### 🔑 Explanation:
+
+* `l` = left pointer, `r` = right pointer.
+* As `r` moves through string:
+
+  * If `s[i]` was seen **inside current window** (`map[s[i]] >= l`), move `l` to one past its last index.
+  * Always update `map[s[i]] = r`.
+* Window size = `r - l + 1`.
+* Track maximum window size in `maxl`.
+
+👉 **Time complexity:** O(n)
+👉 **Space complexity:** O(k), where k = number of unique characters in `s` (at most 256 for ASCII).
+
+---
+
+## ⚖️ Comparison
+
+| Aspect                 | Brute Force (1st) | Sliding Window (2nd) |
+| ---------------------- | ----------------- | -------------------- |
+| Complexity             | O(n²)             | O(n)                 |
+| Space                  | O(1)              | O(k)                 |
+| Easy to understand     | ✅ Yes             | ✅ A bit trickier     |
+| Works for large input? | ❌ No              | ✅ Yes                |
+
+---
+
+⚠️ Small Fix in 2nd Code:
+Currently you wrote `int maxl = INT_MIN;` → this is risky if string length = 1.
+Better:
+
+```cpp
+int maxl = 0;
+```
+
+---
+
+✅ So, **first code = brute force**
+✅ **second code = optimized sliding window**
+
+Would you like me to **trace both codes step by step** on the same example string `"abcabcbb"` so you can see how they differ in execution?
