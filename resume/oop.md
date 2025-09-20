@@ -447,3 +447,163 @@ int main() {
 ---
 
 👉 Do you want me to **prepare a quick tabular difference between compile-time and runtime polymorphism with real-life examples** for your interview notes?
+Exactly 👍 you’ve got the idea — let me show you both situations side by side so it’s crystal clear:
+
+---
+
+### 1. **Normal object of Derived**
+
+```cpp
+int main() {
+    Derived d;
+    d.display();  
+}
+```
+
+* Output → `Display from Derived class`
+* Why? Because the type of the object is **clearly `Derived`**, so compiler knows at **compile time** to call `Derived::display()`.
+* No need for `virtual` here.
+
+---
+
+### 2. **Base pointer → Derived object**
+
+```cpp
+int main() {
+    Base* ptr = new Derived();
+    ptr->display();
+}
+```
+
+* Here the declared type of `ptr` is **Base**, not Derived.
+* At **compile time**, the compiler only knows `ptr` is a `Base*`.
+* Now two cases:
+
+  **Without `virtual`:**
+
+  * Compiler does **early binding** → calls `Base::display()`.
+  * Output: `hi base`.
+
+  **With `virtual`:**
+
+  * Compiler sets up a **vtable (virtual table)** to defer the decision until **runtime**.
+  * At runtime, since `ptr` actually points to a `Derived` object, it calls `Derived::display()`.
+  * Output: `Display from Derived class`.
+
+---
+
+### 🔑 Key Point
+
+* If you directly create a `Derived` object (`Derived d;`), the compiler always knows it’s Derived → calls derived function (no `virtual` needed).
+* `virtual` is **only needed when you’re using a `Base` reference or pointer to refer to a `Derived` object** and want polymorphism.
+
+---
+
+👉 Think of it this way:
+
+* **Direct object → no confusion → compile-time binding.**
+* **Base pointer/reference → possible multiple actual types → runtime decision → need `virtual`.**
+
+---
+
+Would you like me to also explain **what happens internally with vtable** (how C++ knows at runtime which function to call)?
+Ahh 👌 now I get your exact doubt.
+You’re saying: *“If I can just create a `Derived` object and call its function directly, why do I even need a Base pointer/reference to refer to a Derived object?”*
+
+Great question — this is where the **real purpose of polymorphism** comes in.
+
+---
+
+### 🚀 Why use Base pointer/reference to Derived object?
+
+Because in real programs, you don’t always know **at compile time** which derived class you’ll actually be working with.
+You only know you’re working with “some subclass of Base.”
+
+---
+
+### Example 1: Shape example
+
+```cpp
+class Shape {
+public:
+    virtual void draw() { cout << "Drawing Shape\n"; }
+};
+
+class Circle : public Shape {
+public:
+    void draw() override { cout << "Drawing Circle\n"; }
+};
+
+class Square : public Shape {
+public:
+    void draw() override { cout << "Drawing Square\n"; }
+};
+
+int main() {
+    Shape* s1 = new Circle();
+    Shape* s2 = new Square();
+
+    s1->draw();  // Drawing Circle
+    s2->draw();  // Drawing Square
+}
+```
+
+🔑 Here, we treat **all objects as Shape** (`Base*`) but at runtime, the **actual derived class decides** which function to run.
+Without `virtual`, both would just say `Drawing Shape`.
+
+---
+
+### Example 2: When objects are decided at runtime
+
+Imagine you’re writing a function that reads from a config file which shape to create:
+
+```cpp
+Shape* getShape(string type) {
+    if (type == "circle") return new Circle();
+    else return new Square();
+}
+
+int main() {
+    string input; 
+    cin >> input;  // user enters circle or square
+
+    Shape* s = getShape(input);
+    s->draw();  // Works correctly no matter what user chose
+}
+```
+
+👉 Here you don’t know at compile time whether it will be `Circle` or `Square`.
+👉 That’s why you must work through `Base*` (polymorphism).
+
+---
+
+### Example 3: Collections of mixed types
+
+```cpp
+vector<Shape*> shapes;
+shapes.push_back(new Circle());
+shapes.push_back(new Square());
+shapes.push_back(new Circle());
+
+for (Shape* s : shapes) {
+    s->draw();  // each one calls its own draw()
+}
+```
+
+You couldn’t do this with plain `Derived d;` objects, because then you’d need to know the exact type of every element in advance.
+
+---
+
+### ✅ Conclusion
+
+We use **Base pointers/references to Derived objects** when:
+
+1. We want to handle **different derived classes in a uniform way**.
+2. The **actual type is only known at runtime** (e.g., user input, file data, network data).
+3. We need to store **multiple derived objects in the same container** and process them generically.
+
+That’s why polymorphism (with `virtual`) + base pointers/references are powerful.
+
+---
+
+Would you like me to also show you what would happen if we **don’t use virtual** in the shape example? That contrast will make the need even clearer.
