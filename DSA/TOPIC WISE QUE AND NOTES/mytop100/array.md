@@ -870,3 +870,146 @@ int maxl = 0;
 ✅ **second code = optimized sliding window**
 
 Would you like me to **trace both codes step by step** on the same example string `"abcabcbb"` so you can see how they differ in execution?
+
+
+
+
+
+
+Perfect! Let’s carefully compare the **brute force approach** and the **efficient Sieve approach** to print prime numbers up to `N` in **C++**, along with **time complexity analysis** and example calculations.
+
+---
+
+## **1️⃣ Brute Force Approach**
+
+### **Code (C++)**
+
+```cpp
+#include <iostream>
+using namespace std;
+
+bool isPrime(int num) {
+    if (num <= 1) return false;
+    for (int i = 2; i*i <= num; i++) { // check divisors up to sqrt(num)
+        if (num % i == 0) return false;
+    }
+    return true;
+}
+
+int main() {
+    int N;
+    cout << "Enter N: ";
+    cin >> N;
+
+    for (int i = 2; i <= N; i++) {
+        if (isPrime(i))
+            cout << i << " ";
+    }
+    return 0;
+}
+```
+
+### **Time Complexity**
+
+* For each number `i` from 2 to N, we check divisibility up to √i.
+* Approximate number of checks:
+
+$$
+2 + 3 + 4 + ... + \sqrt{N} \approx O(N \sqrt{N})
+$$
+
+✅ **Time Complexity:** **O(N√N)**
+✅ **Space Complexity:** O(1) (no extra space needed)
+
+---
+
+### **Example Calculation**
+
+If `N = 10`:
+
+| Number | Divisors checked (up to √num) | Prime? |
+| ------ | ----------------------------- | ------ |
+| 2      | -                             | Yes    |
+| 3      | 2                             | Yes    |
+| 4      | 2                             | No     |
+| 5      | 2                             | Yes    |
+| 6      | 2                             | No     |
+| 7      | 2                             | Yes    |
+| 8      | 2                             | No     |
+| 9      | 2, 3                          | No     |
+| 10     | 2                             | No     |
+
+* Total checks ≈ 1+1+1+1+1+2+1 = 8 checks
+* Simple but gets slow for large N (e.g., N = 1e6 → \~10^9 operations).
+
+---
+
+## **2️⃣ Efficient Approach: Sieve of Eratosthenes**
+
+### **Code (C++)**
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int N;
+    cout << "Enter N: ";
+    cin >> N;
+
+    vector<bool> isPrime(N + 1, true);
+    isPrime[0] = isPrime[1] = false;
+
+    for (int i = 2; i*i <= N; i++) {
+        if (isPrime[i]) {
+            for (int j = i*i; j <= N; j += i)
+                isPrime[j] = false;
+        }
+    }
+
+    for (int i = 2; i <= N; i++) {
+        if (isPrime[i])
+            cout << i << " ";
+    }
+    return 0;
+}
+```
+
+### **Time Complexity**
+
+* Outer loop: i goes from 2 to √N → O(√N)
+* Inner loop: marks multiples of i up to N.
+* Total operations ≈ N\*(1/2 + 1/3 + 1/5 + 1/7 + …) ≈ **O(N log log N)**
+
+✅ **Space Complexity:** O(N) for the boolean array.
+
+---
+
+### **Example Calculation**
+
+If `N = 10`:
+
+1. Start with `isPrime = [false, false, true, true, true, true, true, true, true, true, true]`
+2. i = 2 → mark 4, 6, 8, 10 → `isPrime = [F,F,T,T,F,T,F,T,F,T,F]`
+3. i = 3 → mark 9 → `isPrime = [F,F,T,T,F,T,F,T,F,F,F]`
+4. i = 4 → already false, skip
+5. Done (because √10 ≈ 3.16)
+
+* Remaining `true` → 2, 3, 5, 7 ✅ primes
+* Much fewer checks than brute force (especially for large N).
+
+---
+
+### **Comparison Table**
+
+| Approach              | Time Complexity | Space Complexity | Suitable For |
+| --------------------- | --------------- | ---------------- | ------------ |
+| Brute Force           | O(N√N)          | O(1)             | Small N      |
+| Sieve of Eratosthenes | O(N log log N)  | O(N)             | Large N      |
+
+---
+
+If you want, I can also **draw a visualization showing how the Sieve marks multiples step by step**, which makes it super clear why it’s faster.
+
+Do you want me to do that?
