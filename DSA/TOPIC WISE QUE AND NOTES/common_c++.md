@@ -462,3 +462,192 @@ This is **the cleanest in-place override approach for interviews**.
 If you want, I can also write **a version for unsorted arrays that preserves original order using `writeIndex = 0` logic**—fully logical, no extra STL containers, in **O(n²)**.
 
 Do you want me to do that?
+
+
+
+
+
+
+
+
+Sure! Here’s a **detailed summary of the most common sorting algorithms** along with their **logic, time & space complexities**, and a small **explanation for each**.
+
+---
+
+## **1️⃣ Bubble Sort**
+
+**Logic:**
+
+* Repeatedly compare adjacent elements and swap if they are in the wrong order.
+* Each pass pushes the largest unsorted element to the end.
+
+```cpp
+void bubbleSort(int arr[], int n){
+    for(int i=0;i<n-1;i++){
+        for(int j=0;j<n-1-i;j++){
+            if(arr[j]>arr[j+1]){
+                swap(arr[j],arr[j+1]);
+            }
+        }
+    }
+}
+```
+
+* **Time Complexity:**
+
+  * Best: O(n) (if already sorted, with optimized version)
+  * Average: O(n²)
+  * Worst: O(n²)
+* **Space Complexity:** O(1)
+* **Stable:** Yes
+
+---
+
+## **2️⃣ Selection Sort**
+
+**Logic:**
+
+* Find the minimum element in the unsorted part and swap it with the first unsorted element.
+
+```cpp
+void selectionSort(int arr[], int n){
+    for(int i=0;i<n-1;i++){
+        int minIndex=i;
+        for(int j=i+1;j<n;j++){
+            if(arr[j]<arr[minIndex]) minIndex=j;
+        }
+        swap(arr[i],arr[minIndex]);
+    }
+}
+```
+
+* **Time Complexity:** O(n²) for all cases
+* **Space Complexity:** O(1)
+* **Stable:** No (swapping may change order of equal elements)
+
+---
+
+## **3️⃣ Insertion Sort**
+
+**Logic:**
+
+* Build a sorted portion at the beginning.
+* Take one element at a time and insert it into its correct position in the sorted part.
+
+```cpp
+void insertionSort(int arr[], int n){
+    for(int i=1;i<n;i++){
+        int key = arr[i];
+        int j = i-1;
+        while(j>=0 && arr[j]>key){
+            arr[j+1] = arr[j];
+            j--;
+        }
+        arr[j+1] = key;
+    }
+}
+```
+
+* **Time Complexity:**
+
+  * Best: O(n) (already sorted)
+  * Average: O(n²)
+  * Worst: O(n²)
+* **Space Complexity:** O(1)
+* **Stable:** Yes
+
+---
+
+## **4️⃣ Merge Sort**
+
+**Logic:**
+
+* Divide the array into two halves, recursively sort each half, then merge them.
+
+```cpp
+void merge(int arr[], int l, int m, int r){
+    int n1=m-l+1, n2=r-m;
+    int L[n1], R[n2];
+    for(int i=0;i<n1;i++) L[i]=arr[l+i];
+    for(int i=0;i<n2;i++) R[i]=arr[m+1+i];
+
+    int i=0,j=0,k=l;
+    while(i<n1 && j<n2){
+        if(L[i]<=R[j]) arr[k++]=L[i++];
+        else arr[k++]=R[j++];
+    }
+    while(i<n1) arr[k++]=L[i++];
+    while(j<n2) arr[k++]=R[j++];
+}
+
+void mergeSort(int arr[], int l, int r){
+    if(l<r){
+        int m = l+(r-l)/2;
+        mergeSort(arr,l,m);
+        mergeSort(arr,m+1,r);
+        merge(arr,l,m,r);
+    }
+}
+```
+
+* **Time Complexity:** O(n log n) for all cases
+* **Space Complexity:** O(n) — extra array for merging
+* **Stable:** Yes
+
+---
+
+## **5️⃣ Quick Sort**
+
+**Logic:**
+
+* Pick a pivot element, partition the array such that elements ≤ pivot are on the left, > pivot on the right.
+* Recursively sort the partitions.
+
+```cpp
+int partition(int arr[], int l, int r){
+    int pivot = arr[r];
+    int i = l-1;
+    for(int j=l;j<r;j++){
+        if(arr[j]<=pivot){
+            i++;
+            swap(arr[i],arr[j]);
+        }
+    }
+    swap(arr[i+1],arr[r]);
+    return i+1;
+}
+
+void quickSort(int arr[], int l, int r){
+    if(l<r){
+        int pi = partition(arr,l,r);
+        quickSort(arr,l,pi-1);
+        quickSort(arr,pi+1,r);
+    }
+}
+```
+
+* **Time Complexity:**
+
+  * Best: O(n log n)
+  * Average: O(n log n)
+  * Worst: O(n²) (if pivot is always smallest/largest)
+* **Space Complexity:** O(log n) — recursion stack
+* **Stable:** No
+
+---
+
+### ✅ **Comparison Table**
+
+| Algorithm      | Best       | Average    | Worst      | Space    | Stable |
+| -------------- | ---------- | ---------- | ---------- | -------- | ------ |
+| Bubble Sort    | O(n)       | O(n²)      | O(n²)      | O(1)     | Yes    |
+| Selection Sort | O(n²)      | O(n²)      | O(n²)      | O(1)     | No     |
+| Insertion Sort | O(n)       | O(n²)      | O(n²)      | O(1)     | Yes    |
+| Merge Sort     | O(n log n) | O(n log n) | O(n log n) | O(n)     | Yes    |
+| Quick Sort     | O(n log n) | O(n log n) | O(n²)      | O(log n) | No     |
+
+---
+
+If you want, I can also **draw a small diagram showing how each algorithm works step by step**—that’s very helpful for interviews.
+
+Do you want me to do that?
