@@ -193,3 +193,138 @@ int main() {
 ---
 
 Do you want me to also show a **dry run example of insert → delete → inorder traversal** so you can see how the tree changes step by step?
+Nice 🚀 Let’s cover both parts step by step:
+
+---
+
+# **1️⃣ Convert Array → Sorted Array using BST**
+
+👉 Idea:
+
+* Insert all elements of the array into a BST.
+* Then do **inorder traversal** of BST → this gives elements in **sorted order**.
+
+```cpp
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+// Insert in BST
+Node* insert(Node* root, int val) {
+    if (root == nullptr) return new Node(val);
+    if (val < root->data)
+        root->left = insert(root->left, val);
+    else
+        root->right = insert(root->right, val);
+    return root;
+}
+
+// Inorder traversal (sorted order)
+void inorder(Node* root, vector<int> &result) {
+    if (!root) return;
+    inorder(root->left, result);
+    result.push_back(root->data);
+    inorder(root->right, result);
+}
+
+// Convert array into sorted array using BST
+vector<int> convertToSorted(vector<int>& arr) {
+    Node* root = nullptr;
+    for (int x : arr) root = insert(root, x);  // build BST
+
+    vector<int> sorted;
+    inorder(root, sorted); // inorder gives sorted order
+    return sorted;
+}
+
+int main() {
+    vector<int> arr = {5, 2, 8, 1, 3};
+    vector<int> sorted = convertToSorted(arr);
+
+    cout << "Sorted Array: ";
+    for (int x : sorted) cout << x << " ";
+    cout << "\n";
+}
+```
+
+**Output:**
+
+```
+Sorted Array: 1 2 3 5 8
+```
+
+✅ Complexity:
+
+* Insert all `n` elements → O(n log n) on average (O(n²) worst if skewed).
+* Inorder traversal → O(n).
+* Total = **O(n log n)** average.
+
+---
+
+# **2️⃣ Validate a BST**
+
+👉 Problem: Given a binary tree, check if it is a valid BST.
+**Condition:** For every node:
+
+* Left subtree values < node’s value.
+* Right subtree values > node’s value.
+
+---
+
+## Approach 1: Range Check (Most Common) ✅
+
+```cpp
+bool isValidBST(Node* root, long long minVal = LLONG_MIN, long long maxVal = LLONG_MAX) {
+    if (root == nullptr) return true;
+
+    if (root->data <= minVal || root->data >= maxVal) return false;
+
+    return isValidBST(root->left, minVal, root->data) &&
+           isValidBST(root->right, root->data, maxVal);
+}
+```
+
+---
+
+## Approach 2: Inorder Traversal (Sorted Check)
+
+👉 Inorder traversal of BST must be **strictly increasing**.
+
+```cpp
+bool inorderCheck(Node* root, Node* &prev) {
+    if (!root) return true;
+
+    if (!inorderCheck(root->left, prev)) return false;
+
+    if (prev != nullptr && root->data <= prev->data) return false;
+    prev = root;
+
+    return inorderCheck(root->right, prev);
+}
+
+bool isValidBST_inorder(Node* root) {
+    Node* prev = nullptr;
+    return inorderCheck(root, prev);
+}
+```
+
+---
+
+✅ **Complexities (Both Approaches):**
+
+* Time: **O(n)** (visit each node once).
+* Space: **O(h)** recursion stack (O(log n) balanced, O(n) skewed).
+
+---
+
+👉 Do you want me to also show a **dry run example of validating a tree that fails BST property** (like `[5,1,4,null,null,3,6]`) so you see why it fails?
