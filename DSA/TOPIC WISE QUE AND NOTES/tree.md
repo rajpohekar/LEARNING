@@ -1,10 +1,10 @@
 Top 10 Tree Interview Problems
 
-Height/Maximum Depth of Binary Tree: Find the maximum distance from root to leaf.
+# Height/Maximum Depth of Binary Tree: Find the maximum distance from root to leaf.
 
-Check if Two Trees are Identical: Validate structural and value equivalence of two trees.
+# Check if Two Trees are Identical: Validate structural and value equivalence of two trees.
 
-Mirror/Symmetric Tree: Determine if a tree is a mirror image or symmetric about its center.
+# Mirror/Symmetric Tree: Determine if a tree is a mirror image or symmetric about its center.
 
 Check/Validate a Binary Search Tree (BST): Confirm if a tree meets BST properties (ordering rules).
 
@@ -12,9 +12,9 @@ Inorder Successor in BST: Find the next node in inorder traversal for a given no
 
 Lowest Common Ancestor (LCA): Given two nodes, find their lowest shared ancestor in the tree.
 
-Diameter of Binary Tree: Compute the longest path between any two nodes in the tree.
+# Diameter of Binary Tree: Compute the longest path between any two nodes in the tree.
 
-Level Order Traversal (BFS): Traverse nodes level-by-level, often used to solve serialization or structure problems.
+# Level Order Traversal (BFS): Traverse nodes level-by-level, often used to solve serialization or structure problems.
 
 Construct Binary Tree from Traversals: Build a tree given inorder and preorder/postorder traversals.
 
@@ -283,3 +283,128 @@ bool isIdentical(Node* p, Node* q) {
 If you want, I can also show the **iterative approach using queues** with **O(n) time** but **O(n) space**, which is useful for interviews too.
 
 Do you want me to show that?
+
+
+
+
+
+
+Great question 👍 The **diameter of a binary tree** is a very popular interview problem. Let’s go step by step.
+
+---
+
+## **Definition**
+
+The **diameter** (a.k.a. width) of a binary tree is the **length of the longest path** between any two nodes in the tree.
+
+* This path **may or may not pass through the root**.
+* The length is measured as the **number of edges** (sometimes number of nodes, but usually edges).
+
+---
+
+## **Approach 1: Brute Force (O(n²))**
+
+**Logic:**
+
+1. For each node, compute:
+
+   * Height of left subtree
+   * Height of right subtree
+   * Diameter passing through this node = `leftHeight + rightHeight`
+2. The overall diameter = `max(diameter of left subtree, diameter of right subtree, leftHeight + rightHeight)`
+
+```cpp
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val){ data=val; left=right=nullptr; }
+};
+
+// Height of a tree
+int height(Node* root){
+    if(!root) return 0;
+    return 1 + max(height(root->left), height(root->right));
+}
+
+// Brute Force Diameter
+int diameter(Node* root){
+    if(!root) return 0;
+    
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+
+    int leftDiameter = diameter(root->left);
+    int rightDiameter = diameter(root->right);
+
+    return max({leftHeight + rightHeight, leftDiameter, rightDiameter});
+}
+```
+
+* **Time Complexity:** O(n²) (height recomputed for every node).
+* **Space Complexity:** O(h) recursion stack (O(n) worst).
+
+---
+
+## **Approach 2: Optimized (O(n))**
+
+**Logic:**
+
+* Instead of recalculating heights, compute **height and diameter together** in one DFS.
+* Use a helper function that returns height while updating diameter.
+
+```cpp
+int diameterUtil(Node* root, int &diam){
+    if(!root) return 0;
+
+    int lh = diameterUtil(root->left, diam);
+    int rh = diameterUtil(root->right, diam);
+
+    // Update diameter if path through root is larger
+    diam = max(diam, lh + rh);
+
+    // Return height
+    return 1 + max(lh, rh);
+}
+
+int diameter(Node* root){
+    int diam = 0;
+    diameterUtil(root, diam);
+    return diam;
+}
+```
+
+* **Time Complexity:** O(n) (each node visited once).
+* **Space Complexity:** O(h) recursion stack.
+
+---
+
+## **Example**
+
+For tree:
+
+```
+       1
+      / \
+     2   3
+    / \
+   4   5
+```
+
+* Path with maximum length = 4 → 2 → 1 → 3 (length = 3 edges).
+* Diameter = 3.
+
+---
+
+✅ **Key Notes for Interviews**
+
+* Clarify whether diameter means **nodes count** or **edges count**.
+* Optimized approach is expected in interviews.
+* Similar to **height problem**, just add an extra tracking variable.
+
+---
+
+Do you want me to also explain this using a **dry run on a sample tree (step-by-step height & diameter updates)**? That’s usually what interviewers ask.
