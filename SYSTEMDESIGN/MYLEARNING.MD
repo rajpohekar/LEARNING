@@ -1,7 +1,7 @@
 SOURCE :
 https://www.youtube.com/watch?v=AK0hu0Zxua4&list=PLQEaRBV9gAFvzp6XhcNFpk1WdOcyVo9qT
 
-
+# hello everyone
 ## 🧠 1. What is System Design?
 
 **System Design** is the process of **designing the architecture of a software system** by defining its **components, interactions, data flow, and scalability strategy**.
@@ -724,7 +724,7 @@ ATM → Main: true
 
 
 
-#  piyush garg
+#  piyush garg------------
 
 
 
