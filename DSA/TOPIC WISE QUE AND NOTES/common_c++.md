@@ -651,3 +651,56 @@ void quickSort(int arr[], int l, int r){
 If you want, I can also **draw a small diagram showing how each algorithm works step by step**—that’s very helpful for interviews.
 
 Do you want me to do that?
+Perfect 🙂 Let’s write a **small demo program** that converts numbers `1–9` into Roman numerals.
+
+---
+
+### ✅ C++ Code (1–9 Roman Conversion)
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+string intToRoman(int num) {
+    vector<int> values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+    vector<string> symbols = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+    string result = "";
+    for (int i = 0; i < values.size(); i++) {
+        while (num >= values[i]) {
+            num -= values[i];
+            result += symbols[i];
+        }
+    }
+    return result;
+}
+
+int main() {
+    for (int i = 1; i <= 9; i++) {
+        cout << i << " -> " << intToRoman(i) << endl;
+    }
+    return 0;
+}
+```
+
+---
+
+### ✅ Output
+
+```
+1 -> I
+2 -> II
+3 -> III
+4 -> IV
+5 -> V
+6 -> VI
+7 -> VII
+8 -> VIII
+9 -> IX
+```
+
+---
+
+Do you also want me to give you the **Python version** (shorter, easier to read), or should we stick with **C++ only**?
