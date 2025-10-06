@@ -1,8 +1,4 @@
-Excellent follow-up, Slavanya 👏 — this is **one of the most asked OOP-concept questions** when you describe your project technically.
 
-Let’s answer it in a way that fits **your AI-Powered Ticket Management System (Node.js + Express + MongoDB)** and can be **used directly in an interview** 👇
-
----
 
 ## ⚙️ **1. Abstraction**
 
