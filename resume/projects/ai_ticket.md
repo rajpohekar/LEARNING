@@ -1,5 +1,5 @@
 
-<img src="ll/ai-ticket-management system.jpg" width="1100" height="400">
+<img src="ll/ai-ticket-management system.jpg" width="200" height="400">
 
 
 ## ⚙️ **1. Abstraction**
