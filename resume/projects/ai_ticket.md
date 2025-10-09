@@ -1,5 +1,5 @@
 
-<img src="deltaaassett/ai-ticket-management system.png" width="1100" height="400">
+<img src="ll/ai-ticket-management system.png" width="1100" height="400">
 ## ⚙️ **1. Abstraction**
 
 **Concept:**
