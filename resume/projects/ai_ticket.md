@@ -1,6 +1,10 @@
 
-<img src="ll/ai-ticket-management system.jpg" width="200" height="400">
-
+<img 
+  src="ll/ai-ticket-management system.jpg" 
+  width="200" 
+  height="400" 
+  style="transform: rotate(-90deg);"
+/>
 
 ## ⚙️ **1. Abstraction**
 
