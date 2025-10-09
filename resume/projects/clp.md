@@ -1,8 +1,6 @@
 https://chatgpt.com/share/689efd05-d8d0-800a-92d2-f93c46aab81a
 
-Great! I’ll do **both** for you:
-
----
+<img src="deltaassett/community-learning-platform.png" width="1100" height="400">
 
 ### ✅ 1. **STAR Format (Interview Pitch)**
 
