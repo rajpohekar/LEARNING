@@ -1,6 +1,4 @@
-Alright, let’s make Java super clear in simple interview-friendly language.
 
----
 
 ## **What is Java?**
 
