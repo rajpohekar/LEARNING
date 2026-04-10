@@ -1,5 +1,3 @@
-## uploading answers in few days... 
-
 Commonly repeated questions : 
 
 1. What are the different types of databases?
@@ -312,12 +310,15 @@ Secondary: Used for searching, not unique
 SELECT MAX(salary) 
 FROM employees 
 WHERE salary < (SELECT MAX(salary) FROM employees);
+```
 
 ## 38. Retention Query
 ```sql
 SELECT user_id, COUNT(DISTINCT login_date) 
 FROM logins 
 GROUP BY user_id;
+```
+
 UNION removes duplicates
 UNION ALL keeps duplicates
 
@@ -327,18 +328,20 @@ Constraints ensure data integrity in the database.
 Retention Query Pattern
 -- Find users who were active in Month 1 and returned in Month 2
 
-SQL
+```sql
 SELECT 
     COUNT(DISTINCT a.user_id) as retained_users
 FROM activity a
 JOIN activity b ON a.user_id = b.user_id
 WHERE DATEDIFF(month, a.event_date, b.event_date) = 1;
+```
+
 VARCHAR vs NVARCHAR
 VARCHAR: Stores non-Unicode characters (1 byte per char). Use for English/standard text.
 
 NVARCHAR: Stores Unicode (2 bytes per char). Essential for multi-language support (Emoji, Chinese, Arabic, etc.).
 
-SQL
+```sql
 WITH first_login AS (
     SELECT user_id, MIN(login_date) AS first_date
     FROM logins
@@ -359,6 +362,8 @@ SELECT first_date AS cohort_date,
 FROM user_activity
 GROUP BY first_date, day_diff
 ORDER BY first_date, day_diff;
+```
+
 39. Year-on-Year Growth
 Used to measure growth of a metric (like revenue) compared to previous year.
 
