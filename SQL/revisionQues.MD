@@ -371,7 +371,7 @@ LAG() fetches previous row value
 Difference gives absolute growth
 Percentage shows relative growth
 
-SQL
+```sql
 SELECT year, 
        revenue,
        LAG(revenue) OVER (ORDER BY year) AS prev_year_revenue,
@@ -381,20 +381,28 @@ SELECT year,
            / LAG(revenue) OVER (ORDER BY year), 2
        ) AS growth_percentage
 FROM sales;
-40. Cumulative Sum
+```
+
+---
+
+## 40. Cumulative Sum
 Used to calculate running totals over time.
 
 Helps in analytics like revenue trend, balance tracking
 Uses window function with ordered rows
 
-SQL
+```sql
 SELECT id, 
        SUM(amount) OVER (
            ORDER BY id 
            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
        ) AS running_total
 FROM transactions;
-41. Window Functions
+```
+
+---
+
+## 41. Window Functions
 Window functions perform calculations across a set of rows without collapsing them.
 
 ROW_NUMBER(): unique sequence
@@ -403,7 +411,7 @@ DENSE_RANK(): no gaps in ranking
 LAG(): previous row value
 LEAD(): next row value
 
-SQL
+```sql
 SELECT 
     employee_id,
     salary,
@@ -413,7 +421,11 @@ SELECT
     LAG(salary) OVER (ORDER BY salary) AS prev_salary,
     LEAD(salary) OVER (ORDER BY salary) AS next_salary
 FROM employees;
-42. Function vs Stored Procedure
+```
+
+---
+
+## 42. Function vs Stored Procedure
 Function:
 
 Returns a value
@@ -430,7 +442,7 @@ Can return multiple values or result sets
 
 Used for business logic
 
-SQL
+```sql
 -- Function
 CREATE FUNCTION get_bonus(salary INT)
 RETURNS INT
@@ -441,7 +453,11 @@ CREATE PROCEDURE get_employee()
 BEGIN
     SELECT * FROM employees;
 END;
-43. Variables in Views
+```
+
+---
+
+## 43. Variables in Views
 Views do not support variables.
 
 Reason:
@@ -450,11 +466,15 @@ Views are static query definitions
 
 They cannot accept runtime parameters
 
-SQL
+```sql
 -- ❌ Invalid
 CREATE VIEW test_view AS
 SELECT * FROM employees WHERE salary > @salary;
-44. Limitations of Views
+```
+
+---
+
+## 44. Limitations of Views
 No Parameters → cannot pass dynamic values
 
 Performance → query runs every time (no stored data)
@@ -463,7 +483,7 @@ No ORDER BY → unless TOP/OFFSET used
 
 DML Restrictions → cannot update if joins/aggregates used
 
-SQL
+```sql
 -- ❌ ORDER BY not allowed
 CREATE VIEW sorted_view AS
 SELECT * FROM employees ORDER BY salary;
@@ -473,7 +493,11 @@ CREATE VIEW complex_view AS
 SELECT dept_id, COUNT(*) 
 FROM employees 
 GROUP BY dept_id;
-45. Index Types
+```
+
+---
+
+## 45. Index Types
 Indexes improve query performance by reducing scan time.
 
 Clustered → actual data sorted
@@ -484,10 +508,14 @@ Composite → multiple columns
 
 Unique → ensures uniqueness
 
-SQL
+```sql
 CREATE INDEX idx_salary ON employees(salary);
 CREATE UNIQUE INDEX idx_email ON employees(email);
-46. GROUP BY vs WHERE
+```
+
+---
+
+## 46. GROUP BY vs WHERE
 WHERE:
 
 Filters rows before grouping
@@ -496,7 +524,7 @@ GROUP BY:
 
 Groups rows for aggregation
 
-SQL
+```sql
 -- WHERE
 SELECT * FROM employees WHERE salary > 50000;
 
@@ -504,7 +532,11 @@ SELECT * FROM employees WHERE salary > 50000;
 SELECT dept_id, COUNT(*) 
 FROM employees 
 GROUP BY dept_id;
-47. WHERE vs HAVING
+```
+
+---
+
+## 47. WHERE vs HAVING
 WHERE:
 
 Applied before aggregation
@@ -513,17 +545,21 @@ HAVING:
 
 Applied after aggregation
 
-SQL
+```sql
 SELECT dept_id, COUNT(*) 
 FROM employees 
 GROUP BY dept_id
 HAVING COUNT(*) > 5;
-48. UNION vs UNION ALL
+```
+
+---
+
+## 48. UNION vs UNION ALL
 UNION removes duplicates (slower)
 
 UNION ALL keeps duplicates (faster)
 
-SQL
+```sql
 SELECT name FROM employees
 UNION
 SELECT name FROM managers;
@@ -531,7 +567,11 @@ SELECT name FROM managers;
 SELECT name FROM employees
 UNION ALL
 SELECT name FROM managers;
-49. Constraints
+```
+
+---
+
+## 49. Constraints
 Constraints enforce rules on data.
 
 PRIMARY KEY → unique + not null
@@ -544,37 +584,46 @@ NOT NULL → mandatory field
 
 CHECK → condition validation
 
-SQL
+```sql
 CREATE TABLE employees (
     id INT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     salary INT CHECK (salary > 0)
 );
+```
+
 50. NULL Handling (Tri-Valued Logic)
 SQL has TRUE, FALSE, UNKNOWN.
 
 Problem:
 
-SQL
+```sql
 SELECT * FROM employees WHERE salary != 50000;
+```
+
 This ignores NULL values.
 
 Solution:
 
-SQL
+```sql
 SELECT * FROM employees WHERE salary IS NULL;
 
 SELECT COALESCE(salary, 0) FROM employees;
+```
+
 51. SARGability (Performance Optimization)
 SARGable queries allow index usage.
 
 Bad:
 
-SQL
+```sql
 SELECT * FROM orders WHERE YEAR(order_date) = 2024;
+```
+
 Good:
 
-SQL
+```sql
 SELECT * FROM orders 
 WHERE order_date >= '2024-01-01' 
   AND order_date < '2025-01-01';
+```
