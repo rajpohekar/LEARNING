@@ -42,64 +42,67 @@
 # 📊 MCP Architecture Diagram (Full Flow Explanation)
 
 This diagram shows the **end-to-end architecture of how MCP works in a real system**.
+![MCP Diagram](../assets/images/mcp.png)
+---
+
+# 📊 MCP Architecture Diagram (Detailed Explanation)
+
+This diagram represents the **complete working architecture of MCP (Model Context Protocol)** in a real-world AI system.
 
 ---
 
-## 🧱 1. High-Level Architecture
+## 🧠 Core Idea of the Diagram
 
-    User (Web/Mobile)
-            ⇅
-         Backend (Orchestrator)
-            ⇅
-            LLM
-            ⇅
-       MCP Servers (Tools)
+The system is designed such that:
 
-👉 The system is **not just LLM-based** — it is an **orchestrated pipeline**
+- The **LLM does not directly access tools**
+- The **Backend acts as an orchestrator**
+- **MCP Servers act as modular tools**
+- **Metadata enables decision making**
 
 ---
 
-## 🧩 2. Components Explained
+## 🧱 1. Components in the Architecture
 
-### 📱 1. Client Layer (Android / iOS / Web)
+### 📱 Client Layer (Android / iOS / Web)
 
-- Entry point of the system
-- User sends a query
+- This is where the user interacts with the system
+- Sends the query to backend
 
-Example:
+Example user query:
 
-    Explain "Reflection" based on top 5 YouTube videos
+    Explain "Reflection" based on the top five videos from YouTube search results
 
 ---
 
-### ⚙️ 2. Backend (Core Orchestrator)
+### ⚙️ Backend (Orchestrator with ALL Metadata)
 
-This is the **most critical layer**.
+- Central control unit of the system
+- Stores metadata of all MCP tools
 
 Responsibilities:
-- Stores **ALL MCP metadata**
-- Sends context to LLM
-- Handles tool execution
-- Manages flow between components
+- Receives user query
+- Sends query + metadata to LLM
+- Executes tool calls
+- Returns final response
 
-Key Idea:
-Backend does NOT solve the query itself  
-It **coordinates** everything
+Important:
+
+    Backend contains ALL metadata of tools
 
 ---
 
-### 🧠 3. LLM (Decision Engine)
+### 🧠 LLM (Decision Engine)
 
-- Receives:
-  - User query
-  - Tool metadata
+- Does NOT call APIs directly
+- Uses metadata to decide which tool to use
 
-- Decides:
-  - Should a tool be used?
-  - Which tool?
-  - What inputs?
+Internally consists of:
 
-Example Decision:
+- model.py (logic ~500 lines)
+- parameters.bin (~400GB trained weights)
+
+LLM generates tool call like:
 
     {
       "tool": "fetch_youtube_videos_with_transcript",
@@ -109,134 +112,179 @@ Example Decision:
       }
     }
 
-LLM acts like a **brain**, not an executor
-
 ---
 
-### 🔌 4. MCP Servers (Tool Layer)
+### 🔌 MCP Servers (Tool Layer)
 
-These are **independent services** exposed via MCP.
+Independent services exposed via MCP
 
 Examples:
-- fetch_crypto_price
-- fetch_google_results_with_content
-- fetch_youtube_videos_with_transcript
+
+    MCP Server : fetch_crypto_price
+    MCP Server : fetch_google_results_with_content
+    MCP Server : fetch_youtube_videos_with_transcript
 
 Each MCP Server:
-- Has **metadata** (name, description, input schema)
-- Has **actual implementation**
-- Returns structured data
+- Has metadata (name, description, input schema)
+- Executes specific task
+- Returns structured output
 
 ---
 
-## 🔄 3. Step-by-Step Flow
+## 🔄 2. End-to-End Flow
 
-### 🟢 Step 1: User Request
+### 🟢 Step 1: User → Backend
 
-    Explain "Reflection" using top 5 YouTube videos
+User sends:
+
+    Explain "Reflection" based on top 5 YouTube videos
 
 ---
 
 ### 🟡 Step 2: Backend → LLM
 
 Backend sends:
-- User query
-- ALL available tool metadata
 
-LLM is aware of **all possible tools**
+    {
+      "query": "Explain Reflection",
+      "metadata": "ALL AVAILABLE TOOLS METADATA"
+    }
+
+Key point:
+LLM now knows ALL tools it can use
 
 ---
 
-### 🔵 Step 3: LLM Decides Tool
+### 🔵 Step 3: LLM Decision
 
-Selected tool:
-
-    fetch_youtube_videos_with_transcript
-
-Arguments:
+LLM analyzes query and selects tool:
 
     {
-      "query": "Reflection",
-      "max_results": 5
+      "tool": "fetch_youtube_videos_with_transcript",
+      "args": {
+        "query": "Reflection",
+        "max_results": 5
+      }
     }
 
 ---
 
-### 🟣 Step 4: Backend Calls MCP Server
+### 🟣 Step 4: Backend Executes Tool
 
-    MCP Server → fetch_youtube_videos_with_transcript
+Backend calls:
 
----
-
-### 🟠 Step 5: Tool Returns Data
-
-- Video transcripts
-- Structured content
+    fetch_youtube_videos_with_transcript(query="Reflection", max_results=5)
 
 ---
 
-### 🔴 Step 6: LLM Generates Final Answer
+### 🟠 Step 5: MCP Server Response
+
+Tool returns:
+
+    {
+      "videos": [
+        { "title": "...", "transcript": "..." },
+        { "title": "...", "transcript": "..." }
+      ]
+    }
+
+---
+
+### 🔴 Step 6: LLM Final Response
+
+Backend sends tool output back to LLM
+
+LLM generates final answer using:
+- Tool data
+- Its reasoning capability
+
+---
+
+## 🔁 3. Full Data Flow
+
+    User
+      ↓
+    Backend
+      ↓
+    LLM (decides tool)
+      ↓
+    Backend
+      ↓
+    MCP Tool
+      ↓
+    Backend
+      ↓
+    LLM (final answer)
+      ↓
+    Backend
+      ↓
+    User
+
+---
+
+## ⚠️ 4. Critical Concepts from Diagram
+
+### 🔑 1. "All Metadata" is VERY Important
+
+- Metadata tells LLM:
+  - What tools exist
+  - What they do
+  - How to use them
+
+Without metadata:
+- LLM cannot call tools
+
+---
+
+### 🔑 2. LLM is NOT an Executor
 
 LLM:
-- Uses tool output
-- Combines with reasoning
-- Produces final response
+- Thinks
+- Decides
+- Generates
+
+Backend:
+- Executes
+- Controls flow
 
 ---
 
-## 🔁 4. Key Data Flow Insight
+### 🔑 3. Tools are Plug-and-Play
 
-    User → Backend → LLM → Tool → LLM → Backend → User
-
-LLM is used twice:
-- Decision phase
-- Answer generation phase
+- New MCP servers can be added easily
+- No need to retrain LLM
 
 ---
 
-## ⚠️ 5. Important Observations
+## 🚀 5. Why This Architecture is Powerful
 
-### 🧠 LLM is NOT doing everything
-- It only:
-  - Decides
-  - Synthesizes
+### ❌ Without MCP
 
----
-
-### ⚙️ Backend is VERY important
-- Controls execution
-- Handles tool calls
-- Maintains metadata
-
----
-
-### 🔌 Tools are modular
-- Easily pluggable
-- Independent services
-
----
-
-## 🚀 6. Why This Architecture Matters
-
-Without MCP Architecture:
-- Hardcoded APIs
+- Hardcoded API calls
 - Tight coupling
-- Poor scalability
+- Not scalable
 
-With MCP Architecture:
-- Plug-and-play tools
-- Dynamic decision-making
-- Scalable system design
+---
+
+### ✅ With MCP
+
+- Dynamic tool usage
+- Clean separation of concerns
+- Scalable and modular system
 
 ---
 
 ## 🧠 Final Summary
 
-This diagram shows how MCP transforms a simple AI system into a **tool-augmented intelligent system**
+This diagram shows a **production-grade AI architecture** where:
 
-- Backend = Orchestrator  
+- Backend = Orchestrator + Metadata Manager  
 - LLM = Decision + Reasoning Engine  
-- MCP Servers = Execution Units  
-- Metadata = Communication Contract  
+- MCP Servers = Execution Layer  
+- Metadata = Communication Bridge  
 
+Final Insight:
+
+    MCP transforms AI from a static model
+    into a dynamic system that can interact with the real world
 Together, they enable **real-world AI applications**
