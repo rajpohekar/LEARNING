@@ -140,3 +140,78 @@ Instead of relying only on memory,
 the model can **look up information before answering**
 
 ---
+## ⚠️ Limitation of Basic RAG Architecture
+
+In the previous setup:
+- Backend manually handles:
+  - API calls (Google, YouTube, Crypto, etc.)
+  - Data fetching logic
+  - Prompt construction
+
+👉 Problem:
+We **cannot build custom backend logic for every possible user request**
+
+- Too many integrations
+- Hard to scale
+- Not flexible for dynamic queries
+- High development & maintenance cost
+
+---
+
+## 🚀 Solution: MCP (Model Context Protocol)
+
+To solve this, we use **MCP (Model Context Protocol)**
+
+### What MCP Does
+- Standardizes how LLM interacts with external tools
+- Removes need for hardcoded backend logic
+- Allows model to dynamically:
+  - Discover tools
+  - Call APIs
+  - Fetch data
+
+---
+
+## 🔄 Updated Flow with MCP
+
+User
+↓
+LLM
+↓
+MCP Layer
+↓
+Tools / APIs (Google, YouTube, Crypto, DB)
+↓
+Return data
+↓
+LLM generates response
+
+---
+
+## 🧠 Key Idea
+
+Instead of:
+❌ Backend manually deciding everything  
+
+We move to:
+✅ LLM + MCP automatically handling tool usage  
+
+---
+
+## ⚡ Analogy
+
+Without MCP:
+- Backend = middleman doing everything manually  
+
+With MCP:
+- LLM = smart agent  
+- MCP = standardized toolbox  
+
+---
+
+## 🔑 Summary
+
+- RAG + Backend → Works but not scalable  
+- MCP → Makes system **dynamic, scalable, and extensible**
+
+---
